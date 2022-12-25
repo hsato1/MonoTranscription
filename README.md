@@ -63,7 +63,7 @@ Fig.4 Plot of recognized MIDI values with the given recognition algorithm
   <img src="https://github.com/hsato1/MonoTranscription/blob/main/imgs/recogv1.png">
 </p>
 <p align="center">
- Plot of recognized pitch in comparison to the correct pitch Midi values (ploted in green)
+ Fig. 5 Plot of recognized pitch in comparison to the correct pitch Midi values (ploted in green)
 </p>
 
 
