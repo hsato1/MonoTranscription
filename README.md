@@ -22,6 +22,9 @@
 
 ### Hidden Markov Model Structure
 #### **Even we can match and attempt to find the best fitting template frame by frame. We should not be calling just one grain of audio, a note. Why??**
-#### A. Because one grain of audio is too short to be considered a note, if we do frame by frame recognition without any restriction. Result may be much noisier. For example,  
+#### A. Because one grain of audio is too short to be considered a note, if we do frame by frame recognition without any restriction. Result may be much noisier. For example, for ss0.wav, with N = 1024, hop size of N/2, each grain of audio is 0.064 seconds. This is too short to be recognized as a note.
 
-####
+* In order to address this issue, we uses Hidden Markov Model Structure with State with certain note length *L* so that we consider sequence of audio for some amount of time as musical note. 
+
+### Dynamic Programming 
+* For this recognition task, we utilize particular graph structure called **trellis** and we traverse this graph structure characterized with log probability of matching template using technique called **dynamic programming**.
