@@ -2,6 +2,7 @@
 library(tuneR)			
 tuneR::setWavPlayer('/usr/bin/afplay')
 
+# importing the wavefile. 
 w = readWave("/Users/satouhiroshiki/Desktop/IndianaUniversity/MIRP/Project/ss0.wav")
 bits = w@bit
 sr = w@samp.rate
@@ -10,14 +11,16 @@ y = w@left
 u = Wave(y, samp.rate = sr, bit=16)
 
 
+# loading metadata of the score. The example is in d major and we have the possible set of notes which voice may sing.
 d_maj = c(50,52,54,55,57,59,61)
 d_maj_two_oct = d_maj + 12
 diatonic = c(0,d_maj,d_maj_two_oct)
 
+
 # FFT length
 N = 512*2
 # N = 512
-# number of sample points to advance per frame.
+# Number of sample points to advance per frame.
 skiplen = N/2
 
 # parameters needed for creating pitch template.
@@ -26,6 +29,7 @@ frames = floor(length(y)/skiplen)
 wid =0.5   # how permissive the pitch is 
 decay = 4 
 
+# this template is essentially a matrix.
 tplt = matrix(.01,length(pitches)+ 1,N/2)
 
 # windowing function to get cleaner spectrum energy.
@@ -87,6 +91,7 @@ lat = matrix(0,states,frames)  # the array that holds the dynamic programming sc
 best = matrix(0,states,frames) # the array of best predecessors.  
 
 
+# below are the model for the silent frame and also singing frame.
 # precomputed values. creating the other contribution in terms of whether the frame we are observing is a rest or singing.
 rest_ = 2*skiplen + 1
 singing = 74*skiplen + 1
@@ -125,6 +130,8 @@ for (j in 2:frames){                # main loop of program (for all frames)
     rest_score = sum(log(rest_mod)*w[1:(N/2)])
     rests[j] = rest_score
   }
+  
+  # This portion of code has not worked as we expected.
   # if (j != frames){
   #  # audio_feat = sum(y[s:(s+N-1)]^2)/N
   #   audio_feat = sum(abs(y[s:(s+N-1)]))/N
@@ -146,6 +153,7 @@ for (j in 2:frames){                # main loop of program (for all frames)
   # 
   # }
   
+  # trellis structure traversal.
   for (i in 1:states) {        # for all states (L for each note)
     r = (i-1) %% L
     cur = floor((i-1) / L)
@@ -175,7 +183,6 @@ for (j in 2:frames){                # main loop of program (for all frames)
 }
 
 # bouncing the log_silent and log_singing score
-
 #png("/Users/satouhiroshiki/Desktop/IndianaUniversity/MIRP/Project/log_score.png")
 #plot(log_score_sing,type='l',
 #     main="Log likelihood/Model matching with silence and singing by frames",
@@ -183,14 +190,13 @@ for (j in 2:frames){                # main loop of program (for all frames)
 #lines(log_score_silent,col=2)
 #dev.off()
 
+
 hat = rep(0,frames)                  # the optimal parse
 hat[frames] = length(list)           # know the optimal last note
 for (j in frames:2)  hat[j-1] = best[hat[j],j] # trace back optimal parse
 
 
-
 recog = pitches[1+floor((hat-1)/L)]
-
 correct_one = recog
 
 for (i in (length(recog) - 9):(length(recog))){
@@ -198,7 +204,7 @@ for (i in (length(recog) - 9):(length(recog))){
 }
 
 
-### bouncing the result plot.
+### bouncing the result plots.
 png("/Users/satouhiroshiki/Desktop/IndianaUniversity/MIRP/Project/recogv2.png")
 plot(recog,main="Transcribed Midi Pitches",
      xlab="Frames",ylab="Midi Values")
@@ -221,10 +227,3 @@ z = sin(ph) + sin(2*ph) + sin(3*ph);
 u = Wave(round((2^9)*z), samp.rate = sr, bit=16)   # make wave struct for the recognized audio.
 writeWave(u,filename = "/Users/satouhiroshiki/Desktop/IndianaUniversity/MIRP/Project/transcribed_audio_n_512.wav")
 play(u)   
-
-
-
-
-
-
-
