@@ -72,7 +72,7 @@ Fig.4 Plot of recognized MIDI values with the given recognition algorithm
  
  The Normalization of the Modulus initially helped us eliminate the noise in identification of rest since it was able to smooth the descrepancy between quieter frame and louder frame. In addition to that, silence template apporach was taken by calculating a FFT over a silent frame and use the FFT Modulus as the template but it did not successfully detect the silence.
  
- ### Rerence and Gratitude.
+ ### Reference and Gratitude.
  I want to thank Dr. Christopher Raphael at IUB for helping me with this project. Working with audio signal and creating a software or algorithm which interacts with musical audio has been my dream and this was my first step forward and without this music information processing class and his help, it was impossible. 
  
 [1] Sight-singing factory.
